@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <NFe>
+    <infNFe Id="NFe123456789" versao="4.00">
+      <emit>
+        <CNPJ>11222333000144</CNPJ>
+        <xNome>Distribuidora de Tecnologia LTDA</xNome>
+      </emit>
+      <dest>
+        <CNPJ>55666777000188</CNPJ>
+        <xNome>Sua Empresa S.A.</xNome>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <xProd>Monitor 24 Polegadas</xProd>
+          <qCom>2.0000</qCom>
+          <vUnCom>750.00</vUnCom>
+        </prod>
+      </det>
+      <det nItem="2">
+        <prod>
+          <xProd>Teclado Mecanico USB</xProd>
+          <qCom>5.0000</qCom>
+          <vUnCom>120.00</vUnCom>
+        </prod>
+      </det>
+    </infNFe>
+  </NFe>
+</nfeProc>
