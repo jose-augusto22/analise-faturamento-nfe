@@ -7,9 +7,9 @@ def configurar_banco():
 
     #cria a tabela apenas com o cabeçalho, sem os dados
     cursor.execute ('''
-                CREATE TABLE IF NOT EXISTS 
-                notas_fiscais 
-                (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                CREATE TABLE IF NOT EXISTS notas_fiscais (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                chave_acesso TEXT UNIQUE,
                 nome_emitente TEXT, 
                 cnpj_emitente TEXT,
                 nome_destinatario TEXT,
@@ -17,7 +17,7 @@ def configurar_banco():
                 )
              ''')
     
-    #cria a tbela de produtos, com uma chave estrangeira para a tabela de notas fiscais
+    #cria a tabela de produtos, com uma chave estrangeira para a tabela de notas fiscais
     cursor.execute('''
                 CREATE TABLE IF NOT EXISTS produtos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
