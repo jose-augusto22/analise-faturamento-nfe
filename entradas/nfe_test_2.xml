@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <NFe>
+    <infNFe Id="NFe123456799" versao="4.00">
+      <emit>
+        <CNPJ>78901234567890</CNPJ>
+        <xNome>Atacado e Varejo LTDA</xNome>
+      </emit>
+      <dest>
+        <CNPJ>55666777000188</CNPJ>
+        <xNome>Sua Empresa S.A.</xNome>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <xProd>Mesa de Escritorio</xProd>
+          <qCom>3.0000</qCom>
+          <vUnCom>250.00</vUnCom>
+        </prod>
+      </det>
+      <det nItem="2">
+        <prod>
+          <xProd>cadeira de escritorio</xProd>
+          <qCom>4.0000</qCom>
+          <vUnCom>175.00</vUnCom>
+        </prod>
+      </det>
+    </infNFe>
+  </NFe>
+</nfeProc>

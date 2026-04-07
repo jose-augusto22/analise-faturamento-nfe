@@ -1,6 +1,7 @@
 
 import xml.etree.ElementTree as ET
 import sqlite3
+import os
 
 def extrair_e_salvar_nfe(caminho_arquivo):
 
@@ -51,13 +52,37 @@ def extrair_e_salvar_nfe(caminho_arquivo):
         #8 Confirmar as alterações e fechar a conexão
         conexao.commit()
         conexao.close()
-        print(f"✅ Nota fiscal '{nome_emitente}' salva com sucesso!")
+        
+        nome_arquivo = os.path.basename(caminho_arquivo)
+        print(f"✅ Arquivo '{nome_arquivo}' de '{nome_emitente}' para '{nome_destinatario}' processado e salvo com sucesso!")
 
-    except FileNotFoundError:
-        print("❌ Arquivo XML não encontrado. Verifique o caminho e tente novamente.")
     except Exception as e:
-        print(f"❌ Erro ao processar o arquivo ou salvar no banco de dados: {e}")
+        print(f"❌ Erro ao processar o arquivo: '{caminho_arquivo}' ou salvar no banco de dados: {e}")
 
-# Executa a função passando o nosso XML de teste
+def processar_lotes(pasta_entradas):
+    #1. Verificar se a pasta de entrada existe
+    if not os.path.exists(pasta_entradas):
+        print(f"❌ A pasta '{pasta_entradas}' não existe. criando a pasta...")
+        os.makedirs(pasta_entradas)
+        print(f"📁 Pasta '{pasta_entradas}' criada. Por favor, adicione os arquivos XML de notas fiscais e execute novamente.")
+        return
+    #2. Buscar todos os arquivos XML na pasta de entrada
+    arquivos_xml = [f for f in os.listdir(pasta_entradas) if f.endswith('.xml')]
+
+    if not arquivos_xml:
+        print(f"📂 A pasta '{pasta_entradas}' está vazia. Por favor, adicione os arquivos XML de notas fiscais e execute novamente.")
+        return
+
+    print(f"📂 Encontrados {len(arquivos_xml)} arquivos XML na pasta '{pasta_entradas}'. Iniciando processamento...")
+
+    #3. Faz o loop para processar cada arquivo XML encontrado
+    for arquivo in arquivos_xml:
+        caminho_completo = os.path.join(pasta_entradas, arquivo)
+        extrair_e_salvar_nfe(caminho_completo)
+
+    print("-" * 50)
+    print("✅ Processamento de lote concluído. Todos os arquivos foram processados e salvos no banco de dados.")
+
+# Ponto de entrada do programa
 if __name__ == "__main__":
-    extrair_e_salvar_nfe('nfe_test.xml')
+    processar_lotes('entradas')
