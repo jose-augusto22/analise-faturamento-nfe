@@ -43,21 +43,21 @@ def extrair_e_salvar_nfe(caminho_arquivo):
             #6. Obter o ID da nota fiscal recém inserida
             nota_fiscal_id = cursor.lastrowid
 
-            #7. Extrair e salvar os produtos da nota fiscal
+            #7. Extrai e Salva os Produtos na tabela 'produtos' com o ID da nota
             produtos = root.findall('.//nfe:det', ns)
             for produto in produtos:
-                descricao_produto = produto.find('.//nfe:xProd', ns).text
-                quantidade_produto = float(produto.find('.//nfe:qCom', ns).text)
-                valor_produto = float(produto.find('.//nfe:vUnCom', ns).text)
+                descricao_produto = produto.find('nfe:prod/nfe:xProd', ns).text
+                quantidade_produto = float(produto.find('nfe:prod/nfe:qCom', ns).text)
+                valor_produto = float(produto.find('nfe:prod/nfe:vUnCom', ns).text)
 
                 #teste de inserção do produto
-                print(f"Inserindo produto: '{descricao_produto}' - Quantidade: {quantidade_produto} - Valor Unitário: {valor_produto} na nota fiscal ID: {nota_fiscal_id}")
+                print(f"  -> Lendo produto do XML: {descricao_produto} | Qtd: {quantidade_produto}")
                 
 
-            cursor.execute('''
-                INSERT INTO produtos (nota_fiscal_id, descricao_produto, quantidade_produto, valor_produto)
-                VALUES (?, ?, ?, ?)
-            ''', (nota_fiscal_id, descricao_produto, quantidade_produto, valor_produto))
+                cursor.execute('''
+                    INSERT INTO produtos (nota_fiscal_id, descricao_produto, quantidade_produto, valor_produto)
+                    VALUES (?, ?, ?, ?)
+                ''', (nota_fiscal_id, descricao_produto, quantidade_produto, valor_produto))
 
             #8 Confirmar as alterações e fechar a conexão
             conexao.commit()
