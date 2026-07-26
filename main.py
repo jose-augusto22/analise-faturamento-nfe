@@ -22,23 +22,60 @@ def extrair_e_salvar_nfe(caminho_arquivo):
         infNFe = root.find('.//nfe:infNFe', ns)
         chave_acesso = infNFe.attrib['Id'][3:] if infNFe is not None else "CHAVE_NAO_ENCONTRADA"
 
+        #3Extrair a data de emissão ( pegando só os 10 primeiros caracteres)
+        ide = root.find('.//nfe:ide', ns)
+        data_bruta = ""
+        if ide is not None:
+            tag_data = ide.find('nfe:dhEmi', ns)
+            if tag_data is not None:
+                tag_data = ide.find('nfe:dEmi', ns) #cobre notas antigas
 
-        #3. Extrair informações do emitente
+            data_bruta = tag_data.text if tag_data is not None else None
+        data_emissao = data_bruta[:10] if data_bruta else None
+
+        #4. Extrair o valor total da nota fiscal
+        total = root.find('.//nfe:total', ns)
+        valor_total = 0.0
+        if total is not None:
+            tag_valor = total.find('nfe:vNF', ns)
+            if tag_valor is not None:
+                valor_total = float(tag_valor.text)
+            else:
+                print(f"⚠️ Valor total não encontrado no arquivo '{os.path.basename(caminho_arquivo)}'. Definindo como 0.0.")
+
+
+        #5. Extrair informações do emitente
         emitente = root.find('.//nfe:emit', ns)
-        nome_emitente = emitente.find('nfe:xNome', ns).text if emitente is not None else None
-        cnpj_emitente = emitente.find('nfe:CNPJ', ns).text if emitente is not None else None
+        nome_emitente = ""
+        cnpj_emitente = ""
+        if emitente is not None:
+            tag_nome = emitente.find('nfe:xNome', ns)
+            tag_cnpj = emitente.find('nfe:CNPJ', ns)
+            nome_emitente = tag_nome.text if tag_nome is not None else None
+            cnpj_emitente = tag_cnpj.text if tag_cnpj is not None else None
+        
 
-        #4. Extrair informações do destinatário
+
+        #6. Extrair informações do destinatário
         destinatario = root.find('.//nfe:dest', ns)
-        nome_destinatario = destinatario.find('nfe:xNome', ns).text if destinatario is not None else None
-        cnpj_destinatario = destinatario.find('nfe:CNPJ', ns).text
-
+        nome_destinatario = ""
+        cnpj_destinatario = "" 
+        if destinatario is not None:
+            tag_nome = destinatario.find('nfe:xNome', ns)
+            nome_destinatario = tag_nome.text if tag_nome is not None else ""
+            tag_cnpj = destinatario.find('nfe:CNPJ', ns)
+            tag_cpf = destinatario.find('nfe:CPF', ns)
+            if tag_cnpj is not None:
+                cnpj_destinatario = tag_cnpj.text
+            elif tag_cpf is not None:
+                cnpj_destinatario = tag_cpf.text
+        
         try:
-            #5. Salvar o Cabeçalho da nota fiscal no banco de dados
+            #. Salvar o Cabeçalho da nota fiscal no banco de dados
             cursor.execute('''
-                INSERT INTO notas_fiscais (chave_acesso, nome_emitente, cnpj_emitente, nome_destinatario, cnpj_destinatario)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (chave_acesso, nome_emitente, cnpj_emitente, nome_destinatario, cnpj_destinatario))
+                INSERT INTO notas_fiscais (chave_acesso, nome_emitente, cnpj_emitente, nome_destinatario, cnpj_destinatario, data_emissao, valor_total)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (chave_acesso, nome_emitente, cnpj_emitente, nome_destinatario, cnpj_destinatario, data_emissao, valor_total))
 
             #6. Obter o ID da nota fiscal recém inserida
             nota_fiscal_id = cursor.lastrowid

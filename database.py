@@ -13,7 +13,9 @@ def configurar_banco():
                 nome_emitente TEXT, 
                 cnpj_emitente TEXT,
                 nome_destinatario TEXT,
-                cnpj_destinatario TEXT
+                cnpj_destinatario TEXT,
+                data_emissao TEXT,
+                valor_total REAL
                 )
              ''')
     
